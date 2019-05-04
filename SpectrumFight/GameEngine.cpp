@@ -13,8 +13,8 @@ namespace Spectrum {
 	}
 
 	void GameEngine::start() {
-		const int screenWidth = 740;
-		const int screenHeight = 480;
+		const int screenWidth = 400;
+		const int screenHeight = 225;
 		gameWindow.create(sf::VideoMode(screenWidth, screenHeight), "SFight Window");
 
 		StartScene sscene(this);

@@ -67,6 +67,15 @@ namespace Spectrum {
 	}
 
 	void BattleScene::drawCreatures() {
+
+		//Draw player shadow
+		sf::Texture shadowT;
+		if (!shadowT.loadFromFile("images/shadow.png")) {
+			//return EXIT_FAILURE;
+		}
+		sf::Sprite shadow;
+		shadow.setTexture(shadowT);
+
 		//Draw player
 		int playerId = bEngine.getPlayer().getId();
 		string filepath = "images/creatures/" + std::to_string(playerId) + ".png";
@@ -78,8 +87,25 @@ namespace Spectrum {
 
 		sf::Sprite playerSprite;
 		playerSprite.setTexture(playerSpriteset);
+
+		//Change origin to bottom center
+		playerSprite.setOrigin(playerSprite.getGlobalBounds().width/2, playerSprite.getGlobalBounds().height);
+		shadow.setOrigin(shadow.getGlobalBounds().width/2, shadow.getGlobalBounds().height);
+
 		playerSprite.setPosition(bEngine.getPlayer().getScreenPosition());
+		shadow.setPosition(playerSprite.getPosition().x, playerSprite.getPosition().y+6);
+		gameEngine->gameWindow.draw(shadow);
 		gameEngine->gameWindow.draw(playerSprite);
+
+	
+
+		//Draw opponent shadow
+		sf::Texture oshadowT;
+		if (!oshadowT.loadFromFile("images/shadow.png")) {
+			//return EXIT_FAILURE;
+		}
+		sf::Sprite oshadow;
+		oshadow.setTexture(oshadowT);
 
 		//Draw opponent
 		int opponentId = bEngine.getOpponent().getId();
@@ -95,11 +121,13 @@ namespace Spectrum {
 
 		//Flip the sprite
 		opponentSprite.scale(-1.f, 1.f);
-		opponentSprite.setOrigin(opponentSprite.getGlobalBounds().width, 0);
+		opponentSprite.setOrigin(opponentSprite.getGlobalBounds().width/2, opponentSprite.getGlobalBounds().height);
+		oshadow.setOrigin(oshadow.getGlobalBounds().width/2, oshadow.getGlobalBounds().height);
 
 		//Set position
 		opponentSprite.setPosition(bEngine.getOpponent().getScreenPosition());
-
+		oshadow.setPosition(opponentSprite.getPosition().x, opponentSprite.getPosition().y + 6);
+		gameEngine->gameWindow.draw(oshadow);
 		gameEngine->gameWindow.draw(opponentSprite);
 
 	}
