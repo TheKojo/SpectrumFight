@@ -134,6 +134,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="BattleAI.cpp" />
     <ClCompile Include="BattleEngine.cpp" />
     <ClCompile Include="BattleScene.cpp" />
     <ClCompile Include="Creature.cpp" />
@@ -143,6 +145,8 @@
     <ClCompile Include="StartScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="BattleAI.h" />
     <ClInclude Include="BattleEngine.h" />
     <ClInclude Include="BattleScene.h" />
     <ClInclude Include="Creature.h" />

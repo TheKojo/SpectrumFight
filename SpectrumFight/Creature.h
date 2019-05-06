@@ -1,5 +1,6 @@
 #include <string>
 #include "SFML/Graphics.hpp"
+#include "BattleAI.h"
 using std::string;
 #pragma once
 
@@ -37,22 +38,34 @@ namespace Spectrum {
 			Down,
 		};
 
-		void setId(int);
+		void setId(int, bool);
 		int getId();
+		void move(Movement);
 		void moveUp();
 		void moveLeft();
 		void moveRight();
 		void moveDown();
 		void setPosition(FieldPosition);
+		bool isMoving;
 		sf::Vector2f getScreenPosition();
+		sf::Vector2f tilePositions(FieldPosition);
+		void updatePosition();
+		void makeMove();
 
 		int id;
 		string name;
 		int hp;
+		int speed; //lower values are faster
 
 		FieldPosition position;
-		//sf::Vector2f screenPosition;
+		FieldPosition oldPosition;
+		sf::Vector2f oldCoord;
+		sf::Vector2f finalCoord;
+		sf::Vector2f curCoord;
+		int moveTimer;
 
+		bool isPlayer;
+		BattleAI AI;
 
 	};
 }

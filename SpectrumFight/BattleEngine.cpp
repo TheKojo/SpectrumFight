@@ -13,25 +13,26 @@ namespace Spectrum {
 	}
 
 	void BattleEngine::startBattle(int playerId, int opponentId) {
-		player.setId(playerId);
+		player.setId(playerId, true);
 		player.setPosition(Creature::MiddleCenter);
-		opponent.setId(opponentId);
+		opponent.setId(opponentId, false);
 		opponent.setPosition(Creature::oMiddleCenter);
 	}
 
 	void BattleEngine::move(sf::Keyboard::Key key) {
+		
 		switch (key) {
-			case sf::Keyboard::W:
-				player.moveUp();
+			case sf::Keyboard::Up:
+				player.move(Creature::Up);
 				break;
-			case sf::Keyboard::A:
-				player.moveLeft();
+			case sf::Keyboard::Left:
+				player.move(Creature::Left);
 				break;
-			case sf::Keyboard::S:
-				player.moveDown();
+			case sf::Keyboard::Down:
+				player.move(Creature::Down);
 				break;
-			case sf::Keyboard::D:
-				player.moveRight();
+			case sf::Keyboard::Right:
+				player.move(Creature::Right);
 				break;
 		}
 	}
@@ -42,6 +43,12 @@ namespace Spectrum {
 
 	Creature BattleEngine::getOpponent() {
 		return opponent;
+	}
+
+	void BattleEngine::update() {
+		player.updatePosition();
+		opponent.makeMove();
+		opponent.updatePosition();
 	}
 }
 

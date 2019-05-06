@@ -11,6 +11,7 @@ namespace Spectrum {
 		void move(sf::Keyboard::Key);
 		Creature getPlayer();
 		Creature getOpponent();
+		void update();
 
 		Creature player;
 		Creature opponent;

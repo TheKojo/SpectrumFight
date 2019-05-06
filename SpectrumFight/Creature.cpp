@@ -1,4 +1,5 @@
 #include "Creature.h"
+#include "BattleAI.h"
 
 namespace Spectrum{
 	Creature::Creature()
@@ -11,12 +12,47 @@ namespace Spectrum{
 	}
 
 
-	void Creature::setId(int newId) {
+	void Creature::setId(int newId, bool player) {
 		id = newId;
+		hp = 50;
+		speed = 200;
+		moveTimer = 0;
+		isPlayer = player;
+		if (!isPlayer) {
+			AI.setAI(BattleAI::Random);
+		}
+		
 	}
 
 	int Creature::getId() {
 		return id;
+	}
+
+	void Creature::move(Movement dir) {
+		if (isMoving == true) {
+			return;
+		}
+		oldPosition = position;
+		switch (dir) {
+			case Up:
+				moveUp();
+				break;
+			case Left:
+				moveLeft();
+				break;
+			case Right:
+				moveRight();
+				break;
+			case Down:
+				moveDown();
+				break;
+		}
+		if (oldPosition != position) {
+			isMoving = true;
+			oldCoord = tilePositions(oldPosition);
+			curCoord = oldCoord;
+			finalCoord = tilePositions(position);
+		}
 	}
 
 	void Creature::moveUp(){
@@ -48,7 +84,35 @@ namespace Spectrum{
 			case BottomRight:
 				position = MiddleRight;
 				break;
+			case oTopLeft:
+				position = oTopLeft;
+				break;
+			case oTopCenter:
+				position = oTopCenter;
+				break;
+			case oTopRight:
+				position = oTopRight;
+				break;
+			case oMiddleLeft:
+				position = oTopLeft;
+				break;
+			case oMiddleCenter:
+				position = oTopCenter;
+				break;
+			case oMiddleRight:
+				position = oTopRight;
+				break;
+			case oBottomLeft:
+				position = oMiddleLeft;
+				break;
+			case oBottomCenter:
+				position = oMiddleCenter;
+				break;
+			case oBottomRight:
+				position = oMiddleRight;
+				break;
 		}
+
 	}
 
 	void Creature::moveLeft() {
@@ -79,6 +143,33 @@ namespace Spectrum{
 				break;
 			case BottomRight:
 				position = BottomCenter;
+				break;
+			case oTopLeft:
+				position = oTopLeft;
+				break;
+			case oTopCenter:
+				position = oTopLeft;
+				break;
+			case oTopRight:
+				position = oTopCenter;
+				break;
+			case oMiddleLeft:
+				position = oMiddleLeft;
+				break;
+			case oMiddleCenter:
+				position = oMiddleLeft;
+				break;
+			case oMiddleRight:
+				position = oMiddleCenter;
+				break;
+			case oBottomLeft:
+				position = oBottomLeft;
+				break;
+			case oBottomCenter:
+				position = oBottomLeft;
+				break;
+			case oBottomRight:
+				position = oBottomCenter;
 				break;
 		}
 	}
@@ -112,6 +203,33 @@ namespace Spectrum{
 			case BottomRight:
 				position = BottomRight;
 				break;
+			case oTopLeft:
+				position = oTopCenter;
+				break;
+			case oTopCenter:
+				position = oTopRight;
+				break;
+			case oTopRight:
+				position = oTopRight;
+				break;
+			case oMiddleLeft:
+				position = oMiddleCenter;
+				break;
+			case oMiddleCenter:
+				position = oMiddleRight;
+				break;
+			case oMiddleRight:
+				position = oMiddleRight;
+				break;
+			case oBottomLeft:
+				position = oBottomCenter;
+				break;
+			case oBottomCenter:
+				position = oBottomRight;
+				break;
+			case oBottomRight:
+				position = oBottomRight;
+				break;
 		}
 	}
 
@@ -144,18 +262,63 @@ namespace Spectrum{
 			case BottomRight:
 				position = BottomRight;
 				break;
+			case oTopLeft:
+				position = oMiddleLeft;
+				break;
+			case oTopCenter:
+				position = oMiddleCenter;
+				break;
+			case oTopRight:
+				position = oMiddleRight;
+				break;
+			case oMiddleLeft:
+				position = oBottomLeft;
+				break;
+			case oMiddleCenter:
+				position = oBottomCenter;
+				break;
+			case oMiddleRight:
+				position = oBottomRight;
+				break;
+			case oBottomLeft:
+				position = oBottomLeft;
+				break;
+			case oBottomCenter:
+				position = oBottomCenter;
+				break;
+			case oBottomRight:
+				position = oBottomRight;
+				break;
 		}
 	}
 
 
 	void Creature::setPosition(FieldPosition newPosition) {
 		position = newPosition;
+		curCoord = tilePositions(position);
 	}
 
 	sf::Vector2f Creature::getScreenPosition() {
-		switch (position) {
+		return curCoord;
+	}
+
+	void Creature::updatePosition() {
+		if (isMoving == true) {
+			curCoord.x += (finalCoord.x - oldCoord.x) / speed;
+			curCoord.y += (finalCoord.y - oldCoord.y) / speed;
+			moveTimer += 1;
+			if (moveTimer >= speed) {
+				isMoving = false;
+				curCoord = finalCoord;
+				moveTimer = 0;
+			}
+		}
+	}
+
+	sf::Vector2f Creature::tilePositions(FieldPosition pos) {
+		switch (pos) {
 			case TopLeft:
-				return sf::Vector2f (35.f, 106.f);
+				return sf::Vector2f(35.f, 106.f);
 			case TopCenter:
 				return sf::Vector2f(101.f, 106.f);
 			case TopRight:
@@ -173,25 +336,45 @@ namespace Spectrum{
 			case BottomRight:
 				return sf::Vector2f(167.f, 200.f);
 			case oTopLeft:
-				return sf::Vector2f(234.f, 106.f);
+				return sf::Vector2f(233.f, 106.f);
 			case oTopCenter:
-				return sf::Vector2f(360.f, 106.f);
+				return sf::Vector2f(299.f, 106.f);
 			case oTopRight:
-				return sf::Vector2f(365.f, 106.f);
+				return sf::Vector2f(364.f, 106.f);
 			case oMiddleLeft:
-				return sf::Vector2f(234.f, 153.f);
+				return sf::Vector2f(233.f, 153.f);
 			case oMiddleCenter:
-				return sf::Vector2f(300.f, 153.f);
+				return sf::Vector2f(299.f, 153.f);
 			case oMiddleRight:
-				return sf::Vector2f(365.f, 153.f);
+				return sf::Vector2f(364.f, 153.f);
 			case oBottomLeft:
 				return sf::Vector2f(234.f, 200.f);
 			case oBottomCenter:
-				return sf::Vector2f(360.f, 200.f);
+				return sf::Vector2f(299.f, 200.f);
 			case oBottomRight:
-				return sf::Vector2f(365.f, 200.f);
+				return sf::Vector2f(364.f, 200.f);
 		}
+
 	}
 
+	void Creature::makeMove() {
+		int newMove = AI.makeMove();
+		switch (newMove) {
+			case 0:
+				break;
+			case 1:
+				move(Up);
+				break;
+			case 2:
+				move(Left);
+				break;
+			case 3:
+				move(Right);
+				break;
+			case 4:
+				move(Down);
+				break;
+		}
+	}
 
 }

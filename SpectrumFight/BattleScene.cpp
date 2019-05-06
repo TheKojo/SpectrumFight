@@ -1,12 +1,13 @@
-
 #include "SFML/Graphics.hpp"
 #include "BattleScene.h"
 #include "BattleEngine.h"
+#include "Animation.h"
 #include <string.h>
 using std::string;
 
 
 namespace Spectrum {
+
 	BattleScene::BattleScene(GameEngine* engine) :
 		gameEngine(engine)
 	{
@@ -27,6 +28,8 @@ namespace Spectrum {
 
 
 		bEngine.startBattle(1, 2);
+		startPlayerSprite();
+		startOpponentSprite();
 
 		while (gameEngine->gameWindow.isOpen()) {
 			sf::Event event;
@@ -38,22 +41,25 @@ namespace Spectrum {
 					gameEngine->gameWindow.close();
 				}
 
-				if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::W)) {
-					bEngine.move(sf::Keyboard::W);
+				if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Up)) {
+					bEngine.move(sf::Keyboard::Up);
 				}
-				else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::A)) {
-					bEngine.move(sf::Keyboard::A);
+				else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Left)) {
+					bEngine.move(sf::Keyboard::Left);
 				}
-				else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::S)) {
-					bEngine.move(sf::Keyboard::S);
+				else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Down)) {
+					bEngine.move(sf::Keyboard::Down);
 				}
-				else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::D)) {
-					bEngine.move(sf::Keyboard::D);
+				else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Right)) {
+					bEngine.move(sf::Keyboard::Right);
 				}
 			}
 
+			bEngine.update();
+
 			gameEngine->gameWindow.clear();
 			drawField();
+			
 			drawCreatures();
 			gameEngine->gameWindow.display();
 		}
@@ -76,17 +82,8 @@ namespace Spectrum {
 		sf::Sprite shadow;
 		shadow.setTexture(shadowT);
 
-		//Draw player
-		int playerId = bEngine.getPlayer().getId();
-		string filepath = "images/creatures/" + std::to_string(playerId) + ".png";
-
-		sf::Texture playerSpriteset;
-		if (!playerSpriteset.loadFromFile(filepath)) {
-			//return EXIT_FAILURE;
-		}
-
-		sf::Sprite playerSprite;
 		playerSprite.setTexture(playerSpriteset);
+		playerAnimation.update();
 
 		//Change origin to bottom center
 		playerSprite.setOrigin(playerSprite.getGlobalBounds().width/2, playerSprite.getGlobalBounds().height);
@@ -107,22 +104,13 @@ namespace Spectrum {
 		sf::Sprite oshadow;
 		oshadow.setTexture(oshadowT);
 
-		//Draw opponent
-		int opponentId = bEngine.getOpponent().getId();
-		string ofilepath = "images/creatures/" + std::to_string(opponentId) + ".png";
-
-		sf::Texture opponentSpriteset;
-		if (!opponentSpriteset.loadFromFile(ofilepath)) {
-			//return EXIT_FAILURE;
-		}
-
-		sf::Sprite opponentSprite;
 		opponentSprite.setTexture(opponentSpriteset);
+		
 
-		//Flip the sprite
-		opponentSprite.scale(-1.f, 1.f);
+		//Change origin to bottom center
 		opponentSprite.setOrigin(opponentSprite.getGlobalBounds().width/2, opponentSprite.getGlobalBounds().height);
 		oshadow.setOrigin(oshadow.getGlobalBounds().width/2, oshadow.getGlobalBounds().height);
+		opponentAnimation.update();
 
 		//Set position
 		opponentSprite.setPosition(bEngine.getOpponent().getScreenPosition());
@@ -130,6 +118,37 @@ namespace Spectrum {
 		gameEngine->gameWindow.draw(oshadow);
 		gameEngine->gameWindow.draw(opponentSprite);
 
+
+	}
+
+	void BattleScene::startPlayerSprite() {
+		//Draw player
+		int playerId = bEngine.getPlayer().getId();
+		string filepath = "images/creatures/" + std::to_string(playerId) + "_stand.png";
+
+		
+		if (!playerSpriteset.loadFromFile(filepath)) {
+			//return EXIT_FAILURE;
+		}
+
+		playerSprite.setTexture(playerSpriteset);
+		playerAnimation.setSprite(&playerSprite);
+	}
+
+	void BattleScene::startOpponentSprite() {
+		//Draw opponent
+		int opponentId = bEngine.getOpponent().getId();
+		string ofilepath = "images/creatures/" + std::to_string(opponentId) + "_stand.png";
+
+		if (!opponentSpriteset.loadFromFile(ofilepath)) {
+			//return EXIT_FAILURE;
+		}
+
+		//Flip sprite
+		opponentSprite.scale(-1.f, 1.f);
+
+		opponentSprite.setTexture(opponentSpriteset);
+		opponentAnimation.setSprite(&opponentSprite);
 	}
 }
 
