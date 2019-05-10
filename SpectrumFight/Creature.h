@@ -1,10 +1,21 @@
+#pragma once
 #include <string>
+#include <array>
+#include <vector>
 #include "SFML/Graphics.hpp"
 #include "BattleAI.h"
+#include "AttackMove.h"
+#include "Attack.h"
+
+
+using namespace std;
 using std::string;
-#pragma once
+
 
 namespace Spectrum {
+
+	class FieldTile;
+
 	class Creature
 	{
 	public:
@@ -38,27 +49,41 @@ namespace Spectrum {
 			Down,
 		};
 
+		void init(int newId, int species, bool player, std::array<std::array<FieldTile, 3>, 6>* fieldArr);
+
 		void setId(int, bool);
 		int getId();
+		int getSpecies();
 		void move(Movement);
 		void moveUp();
 		void moveLeft();
 		void moveRight();
 		void moveDown();
-		void setPosition(FieldPosition);
+		//void setPosition(FieldPosition);
 		bool isMoving;
 		sf::Vector2f getScreenPosition();
-		sf::Vector2f tilePositions(FieldPosition);
+		sf::Vector2f tilePositions(sf::Vector2i);
 		void updatePosition();
 		void makeMove();
+		void physicalAttack();
+
+		float getHPPercentage();
+		void reduceHP(int val);
+		void updateAttacks();
+		void update();
 
 		int id;
+		int species;
 		string name;
-		int hp;
+		float totalHP;
+		float curHP;
 		int speed; //lower values are faster
+		Attack physAttack;
 
-		FieldPosition position;
-		FieldPosition oldPosition;
+		std::array<std::array<FieldTile, 3>, 6>* field;
+
+		sf::Vector2i position;
+		sf::Vector2i oldPosition;
 		sf::Vector2f oldCoord;
 		sf::Vector2f finalCoord;
 		sf::Vector2f curCoord;
@@ -66,6 +91,8 @@ namespace Spectrum {
 
 		bool isPlayer;
 		BattleAI AI;
+
+		std::vector<AttackMove> activeAttacks;
 
 	};
 }

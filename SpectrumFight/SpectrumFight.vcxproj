@@ -135,10 +135,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Attack.cpp" />
+    <ClCompile Include="AttackMove.cpp" />
     <ClCompile Include="BattleAI.cpp" />
     <ClCompile Include="BattleEngine.cpp" />
     <ClCompile Include="BattleScene.cpp" />
     <ClCompile Include="Creature.cpp" />
+    <ClCompile Include="FieldTile.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="main.cpp" />
@@ -146,10 +149,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="Attack.h" />
+    <ClInclude Include="AttackMove.h" />
     <ClInclude Include="BattleAI.h" />
     <ClInclude Include="BattleEngine.h" />
     <ClInclude Include="BattleScene.h" />
     <ClInclude Include="Creature.h" />
+    <ClInclude Include="FieldTile.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="StartScene.h" />

@@ -53,6 +53,15 @@ namespace Spectrum {
 				else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Right)) {
 					bEngine.move(sf::Keyboard::Right);
 				}
+				else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::S)) {
+					bEngine.weakAttack();
+				}
+				else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::D)) {
+					bEngine.strongAttack();
+				}
+				else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::LShift)) {
+					bEngine.physicalAttack();
+				}
 			}
 
 			bEngine.update();
@@ -94,7 +103,7 @@ namespace Spectrum {
 		gameEngine->gameWindow.draw(shadow);
 		gameEngine->gameWindow.draw(playerSprite);
 
-	
+		drawPlayerHP();
 
 		//Draw opponent shadow
 		sf::Texture oshadowT;
@@ -118,12 +127,12 @@ namespace Spectrum {
 		gameEngine->gameWindow.draw(oshadow);
 		gameEngine->gameWindow.draw(opponentSprite);
 
-
+		drawOpponentHP();
 	}
 
 	void BattleScene::startPlayerSprite() {
 		//Draw player
-		int playerId = bEngine.getPlayer().getId();
+		int playerId = bEngine.getPlayer().getSpecies();
 		string filepath = "images/creatures/" + std::to_string(playerId) + "_stand.png";
 
 		
@@ -137,7 +146,7 @@ namespace Spectrum {
 
 	void BattleScene::startOpponentSprite() {
 		//Draw opponent
-		int opponentId = bEngine.getOpponent().getId();
+		int opponentId = bEngine.getOpponent().getSpecies();
 		string ofilepath = "images/creatures/" + std::to_string(opponentId) + "_stand.png";
 
 		if (!opponentSpriteset.loadFromFile(ofilepath)) {
@@ -149,6 +158,67 @@ namespace Spectrum {
 
 		opponentSprite.setTexture(opponentSpriteset);
 		opponentAnimation.setSprite(&opponentSprite);
+	}
+
+
+	void BattleScene::drawPlayerHP() {
+		sf::Texture hpGaugeT;
+		if (!hpGaugeT.loadFromFile("images/hpbar.png")) {
+			//return EXIT_FAILURE;
+		}
+		sf::Sprite hpGauge;
+		hpGauge.setTexture(hpGaugeT);
+		hpGauge.setPosition(playerSprite.getPosition().x - 13, playerSprite.getPosition().y + 10);// - playerSprite.getGlobalBounds().height - 10);
+
+		float percent = bEngine.getPlayer().getHPPercentage();
+		string barname = "hpgreen";
+		if (percent <= 0.25) {
+			barname = "hpred";
+		}
+		else if (percent <= 0.5) {
+			barname = "hpyellow";
+		}
+		sf::Texture hpBarT;
+		if (!hpBarT.loadFromFile("images/"+ barname+".png")) {
+			//return EXIT_FAILURE;
+		}
+		sf::Sprite hpBar;
+		hpBar.setTexture(hpBarT);
+		hpBar.setTextureRect(sf::IntRect(0,0, hpBarT.getSize().x*percent,hpBarT.getSize().y));
+		hpBar.setPosition(hpGauge.getPosition().x+1, hpGauge.getPosition().y+1);
+
+		gameEngine->gameWindow.draw(hpGauge);
+		gameEngine->gameWindow.draw(hpBar);
+	}
+
+	void BattleScene::drawOpponentHP() {
+		sf::Texture hpGaugeT;
+		if (!hpGaugeT.loadFromFile("images/hpbar.png")) {
+			//return EXIT_FAILURE;
+		}
+		sf::Sprite hpGauge;
+		hpGauge.setTexture(hpGaugeT);
+		hpGauge.setPosition(opponentSprite.getPosition().x - 13, opponentSprite.getPosition().y + 10);// -opponentSprite.getGlobalBounds().height - 10);
+
+		float percent = bEngine.getOpponent().getHPPercentage();
+		string barname = "hpgreen";
+		if (percent <= 0.25) {
+			barname = "hpred";
+		}
+		else if (percent <= 0.5) {
+			barname = "hpyellow";
+		}
+		sf::Texture hpBarT;
+		if (!hpBarT.loadFromFile("images/" + barname + ".png")) {
+			//return EXIT_FAILURE;
+		}
+		sf::Sprite hpBar;
+		hpBar.setTexture(hpBarT);
+		hpBar.setTextureRect(sf::IntRect(0, 0, hpBarT.getSize().x*percent, hpBarT.getSize().y));
+		hpBar.setPosition(hpGauge.getPosition().x + 1, hpGauge.getPosition().y + 1);
+
+		gameEngine->gameWindow.draw(hpGauge);
+		gameEngine->gameWindow.draw(hpBar);
 	}
 }
 

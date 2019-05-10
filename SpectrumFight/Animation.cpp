@@ -19,7 +19,7 @@ namespace Spectrum {
 		int frameWidth = target->getGlobalBounds().height;
 
 		for (int i = 0; i < spritesetWidth/frameWidth; i++) {
-			addFrame({ sf::IntRect(frameWidth*i,0,frameWidth,frameWidth), 0.8 });
+			addFrame({ sf::IntRect(frameWidth*i,0,frameWidth,frameWidth), 0.5 });
 		}
 		
 	}

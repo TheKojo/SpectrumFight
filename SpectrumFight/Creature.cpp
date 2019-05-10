@@ -1,5 +1,8 @@
 #include "Creature.h"
 #include "BattleAI.h"
+#include "FieldTile.h"
+#include <array>
+using namespace std;
 
 namespace Spectrum{
 	Creature::Creature()
@@ -11,11 +14,32 @@ namespace Spectrum{
 	{
 	}
 
+	void Creature::init(int newId, int speciesVal, bool player, std::array<std::array<FieldTile, 3>, 6>* fieldArr) {
+		id = newId;
+		species = speciesVal;
+		isPlayer = player;
+		field = fieldArr;
+		totalHP = 50;
+		curHP = totalHP;
+		speed = 100;
+		moveTimer = 0;
+		//physAttack.init(10,100,100,id,true);
+
+		if (isPlayer) {
+			position = sf::Vector2i(1, 1);
+		}
+		else{
+			position = sf::Vector2i(4, 1);
+			AI.setAI(BattleAI::Random);
+		}
+		curCoord = tilePositions(position);
+	}
 
 	void Creature::setId(int newId, bool player) {
 		id = newId;
-		hp = 50;
-		speed = 200;
+		totalHP = 50;
+		curHP = totalHP;
+		speed = 100;
 		moveTimer = 0;
 		isPlayer = player;
 		if (!isPlayer) {
@@ -26,6 +50,10 @@ namespace Spectrum{
 
 	int Creature::getId() {
 		return id;
+	}
+
+	int Creature::getSpecies() {
+		return species;
 	}
 
 	void Creature::move(Movement dir) {
@@ -48,6 +76,9 @@ namespace Spectrum{
 				break;
 		}
 		if (oldPosition != position) {
+			(*field)[position.x][position.y].setCreature(this);
+			(*field)[oldPosition.x][oldPosition.y].removeCreature();
+
 			isMoving = true;
 			oldCoord = tilePositions(oldPosition);
 			curCoord = oldCoord;
@@ -56,247 +87,34 @@ namespace Spectrum{
 	}
 
 	void Creature::moveUp(){
-		switch (position) {
-			case TopLeft:
-				position = TopLeft;
-				break;
-			case TopCenter:
-				position = TopCenter;
-				break;
-			case TopRight:
-				position = TopRight;
-				break;
-			case MiddleLeft:
-				position = TopLeft;
-				break;
-			case MiddleCenter:
-				position = TopCenter;
-				break;
-			case MiddleRight:
-				position = TopRight;
-				break;
-			case BottomLeft:
-				position = MiddleLeft;
-				break;
-			case BottomCenter:
-				position = MiddleCenter;
-				break;
-			case BottomRight:
-				position = MiddleRight;
-				break;
-			case oTopLeft:
-				position = oTopLeft;
-				break;
-			case oTopCenter:
-				position = oTopCenter;
-				break;
-			case oTopRight:
-				position = oTopRight;
-				break;
-			case oMiddleLeft:
-				position = oTopLeft;
-				break;
-			case oMiddleCenter:
-				position = oTopCenter;
-				break;
-			case oMiddleRight:
-				position = oTopRight;
-				break;
-			case oBottomLeft:
-				position = oMiddleLeft;
-				break;
-			case oBottomCenter:
-				position = oMiddleCenter;
-				break;
-			case oBottomRight:
-				position = oMiddleRight;
-				break;
+		if (position.y > 0) {
+			position.y -= 1;
 		}
-
 	}
 
 	void Creature::moveLeft() {
-		switch (position) {
-			case TopLeft:
-				position = TopLeft;
-				break;
-			case TopCenter:
-				position = TopLeft;
-				break;
-			case TopRight:
-				position = TopCenter;
-				break;
-			case MiddleLeft:
-				position = MiddleLeft;
-				break;
-			case MiddleCenter:
-				position = MiddleLeft;
-				break;
-			case MiddleRight:
-				position = MiddleCenter;
-				break;
-			case BottomLeft:
-				position = BottomLeft;
-				break;
-			case BottomCenter:
-				position = BottomLeft;
-				break;
-			case BottomRight:
-				position = BottomCenter;
-				break;
-			case oTopLeft:
-				position = oTopLeft;
-				break;
-			case oTopCenter:
-				position = oTopLeft;
-				break;
-			case oTopRight:
-				position = oTopCenter;
-				break;
-			case oMiddleLeft:
-				position = oMiddleLeft;
-				break;
-			case oMiddleCenter:
-				position = oMiddleLeft;
-				break;
-			case oMiddleRight:
-				position = oMiddleCenter;
-				break;
-			case oBottomLeft:
-				position = oBottomLeft;
-				break;
-			case oBottomCenter:
-				position = oBottomLeft;
-				break;
-			case oBottomRight:
-				position = oBottomCenter;
-				break;
+		if ((position.x > 0 && isPlayer) || (position.x > 3 && !isPlayer)) {
+			position.x -= 1;
 		}
 	}
 
 	void Creature::moveRight() {
-		switch (position) {
-			case TopLeft:
-				position = TopCenter;
-				break;
-			case TopCenter:
-				position = TopRight;
-				break;
-			case TopRight:
-				position = TopRight;
-				break;
-			case MiddleLeft:
-				position = MiddleCenter;
-				break;
-			case MiddleCenter:
-				position = MiddleRight;
-				break;
-			case MiddleRight:
-				position = MiddleRight;
-				break;
-			case BottomLeft:
-				position = BottomCenter;
-				break;
-			case BottomCenter:
-				position = BottomRight;
-				break;
-			case BottomRight:
-				position = BottomRight;
-				break;
-			case oTopLeft:
-				position = oTopCenter;
-				break;
-			case oTopCenter:
-				position = oTopRight;
-				break;
-			case oTopRight:
-				position = oTopRight;
-				break;
-			case oMiddleLeft:
-				position = oMiddleCenter;
-				break;
-			case oMiddleCenter:
-				position = oMiddleRight;
-				break;
-			case oMiddleRight:
-				position = oMiddleRight;
-				break;
-			case oBottomLeft:
-				position = oBottomCenter;
-				break;
-			case oBottomCenter:
-				position = oBottomRight;
-				break;
-			case oBottomRight:
-				position = oBottomRight;
-				break;
+		if ((position.x < 2 && isPlayer) || (position.x < 5 && !isPlayer)) {
+			position.x += 1;
 		}
 	}
 
 	void Creature::moveDown() {
-		switch (position) {
-			case TopLeft:
-				position = MiddleLeft;
-				break;
-			case TopCenter:
-				position = MiddleCenter;
-				break;
-			case TopRight:
-				position = MiddleRight;
-				break;
-			case MiddleLeft:
-				position = BottomLeft;
-				break;
-			case MiddleCenter:
-				position = BottomCenter;
-				break;
-			case MiddleRight:
-				position = BottomRight;
-				break;
-			case BottomLeft:
-				position = BottomLeft;
-				break;
-			case BottomCenter:
-				position = BottomCenter;
-				break;
-			case BottomRight:
-				position = BottomRight;
-				break;
-			case oTopLeft:
-				position = oMiddleLeft;
-				break;
-			case oTopCenter:
-				position = oMiddleCenter;
-				break;
-			case oTopRight:
-				position = oMiddleRight;
-				break;
-			case oMiddleLeft:
-				position = oBottomLeft;
-				break;
-			case oMiddleCenter:
-				position = oBottomCenter;
-				break;
-			case oMiddleRight:
-				position = oBottomRight;
-				break;
-			case oBottomLeft:
-				position = oBottomLeft;
-				break;
-			case oBottomCenter:
-				position = oBottomCenter;
-				break;
-			case oBottomRight:
-				position = oBottomRight;
-				break;
+		if (position.y < 2) {
+			position.y += 1;
 		}
 	}
 
 
-	void Creature::setPosition(FieldPosition newPosition) {
+	/*void Creature::setPosition(FieldPosition newPosition) {
 		position = newPosition;
 		curCoord = tilePositions(position);
-	}
+	}*/
 
 	sf::Vector2f Creature::getScreenPosition() {
 		return curCoord;
@@ -315,46 +133,41 @@ namespace Spectrum{
 		}
 	}
 
-	sf::Vector2f Creature::tilePositions(FieldPosition pos) {
-		switch (pos) {
-			case TopLeft:
-				return sf::Vector2f(35.f, 106.f);
-			case TopCenter:
-				return sf::Vector2f(101.f, 106.f);
-			case TopRight:
-				return sf::Vector2f(167.f, 106.f);
-			case MiddleLeft:
-				return sf::Vector2f(35.f, 153.f);
-			case MiddleCenter:
-				return sf::Vector2f(101.f, 153.f);
-			case MiddleRight:
-				return sf::Vector2f(167.f, 153.f);
-			case BottomLeft:
-				return sf::Vector2f(35.f, 200.f);
-			case BottomCenter:
-				return sf::Vector2f(101.f, 200.f);
-			case BottomRight:
-				return sf::Vector2f(167.f, 200.f);
-			case oTopLeft:
-				return sf::Vector2f(233.f, 106.f);
-			case oTopCenter:
-				return sf::Vector2f(299.f, 106.f);
-			case oTopRight:
-				return sf::Vector2f(364.f, 106.f);
-			case oMiddleLeft:
-				return sf::Vector2f(233.f, 153.f);
-			case oMiddleCenter:
-				return sf::Vector2f(299.f, 153.f);
-			case oMiddleRight:
-				return sf::Vector2f(364.f, 153.f);
-			case oBottomLeft:
-				return sf::Vector2f(234.f, 200.f);
-			case oBottomCenter:
-				return sf::Vector2f(299.f, 200.f);
-			case oBottomRight:
-				return sf::Vector2f(364.f, 200.f);
+	sf::Vector2f Creature::tilePositions(sf::Vector2i pos) {
+		sf::Vector2f screenVal;
+
+		//x
+		if (pos.x == 0) {
+			screenVal.x = 35.f;
+		}
+		else if (pos.x == 1) {
+			screenVal.x = 101.f;
+		}
+		else if (pos.x == 2) {
+			screenVal.x = 167.f;
+		}
+		else if (pos.x == 3) {
+			screenVal.x = 233.f;
+		}
+		else if (pos.x == 4) {
+			screenVal.x = 299.f;
+		}
+		else {
+			screenVal.x = 364.f;
 		}
 
+		//y
+		if (pos.y == 0) {
+			screenVal.y = 106.f;
+		}
+		else if (pos.y == 1) {
+			screenVal.y = 153.f;
+		}
+		else {
+			screenVal.y = 200.f;
+		}
+
+		return screenVal;
 	}
 
 	void Creature::makeMove() {
@@ -375,6 +188,38 @@ namespace Spectrum{
 				move(Down);
 				break;
 		}
+	}
+
+	float Creature::getHPPercentage() {
+		return curHP / totalHP;
+	}
+
+	void Creature::reduceHP(int val) {
+		curHP -= val;
+		if (curHP < 0) {
+			curHP = 0;
+		}
+	}
+
+	void Creature::physicalAttack() {
+		AttackMove atk;
+		atk.init(this, field);
+		activeAttacks.push_back(atk);
+
+		//put attack on field
+
+
+	}
+
+	void Creature::updateAttacks() {
+		for (int i = 0; i < activeAttacks.size(); i++) {
+			activeAttacks[i].update();
+		}
+	}
+
+	void Creature::update() {
+		updatePosition();
+		updateAttacks();
 	}
 
 }

@@ -18,6 +18,8 @@ namespace Spectrum {
 		void drawCreatures();
 		void startPlayerSprite();
 		void startOpponentSprite();
+		void drawPlayerHP();
+		void drawOpponentHP();
 
 		GameEngine* gameEngine;
 		BattleEngine bEngine;
@@ -30,6 +32,7 @@ namespace Spectrum {
 		sf::Sprite opponentSprite;
 		sf::Texture opponentSpriteset;
 		Animation opponentAnimation;
+
 	};
 }
 

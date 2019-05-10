@@ -1,6 +1,7 @@
 #include "SFML/Graphics.hpp"
 #include "BattleEngine.h"
 #include "Creature.h"
+#include "FieldTile.h"
 
 namespace Spectrum {
 	BattleEngine::BattleEngine()
@@ -12,11 +13,17 @@ namespace Spectrum {
 	{
 	}
 
-	void BattleEngine::startBattle(int playerId, int opponentId) {
-		player.setId(playerId, true);
-		player.setPosition(Creature::MiddleCenter);
-		opponent.setId(opponentId, false);
-		opponent.setPosition(Creature::oMiddleCenter);
+	void BattleEngine::startBattle(int playerSpecies, int opponentSpecies) {
+
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 3; j++) {
+				FieldTile tile;
+				field[i][j] = tile;
+			}
+		}
+
+		player.init(1, playerSpecies, true, &field);
+		opponent.init(2, opponentSpecies, false, &field);
 	}
 
 	void BattleEngine::move(sf::Keyboard::Key key) {
@@ -37,6 +44,17 @@ namespace Spectrum {
 		}
 	}
 
+	void BattleEngine::weakAttack() {
+
+	}
+	void BattleEngine::strongAttack() {
+
+	}
+	void BattleEngine::physicalAttack() {
+		player.physicalAttack();
+
+	}
+
 	Creature BattleEngine::getPlayer() {
 		return player;
 	}
@@ -46,9 +64,16 @@ namespace Spectrum {
 	}
 
 	void BattleEngine::update() {
-		player.updatePosition();
+		player.update();
 		opponent.makeMove();
-		opponent.updatePosition();
+		opponent.update();
+
+		//Update field
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 3; j++) {
+				field[i][j].update();
+			}
+		}
 	}
 }
 
