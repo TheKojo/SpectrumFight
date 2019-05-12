@@ -3,6 +3,8 @@
 #include "BattleEngine.h"
 #include "Animation.h"
 #include <string.h>
+#include <vector>
+using namespace std;
 using std::string;
 
 
@@ -27,9 +29,10 @@ namespace Spectrum {
 		battlebg.setTexture(texture);
 
 
-		bEngine.startBattle(1, 2);
+		bEngine.startBattle(1, 2, gameEngine);
 		startPlayerSprite();
 		startOpponentSprite();
+		//startAttack();
 
 		while (gameEngine->gameWindow.isOpen()) {
 			sf::Event event;
@@ -60,7 +63,7 @@ namespace Spectrum {
 					bEngine.strongAttack();
 				}
 				else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::LShift)) {
-					bEngine.physicalAttack();
+					bEngine.physicalAttack();	
 				}
 			}
 
@@ -70,6 +73,8 @@ namespace Spectrum {
 			drawField();
 			
 			drawCreatures();
+			drawAttacks();
+
 			gameEngine->gameWindow.display();
 		}
 
@@ -91,6 +96,7 @@ namespace Spectrum {
 		sf::Sprite shadow;
 		shadow.setTexture(shadowT);
 
+		setSpriteset(true);
 		playerSprite.setTexture(playerSpriteset);
 		playerAnimation.update();
 
@@ -113,6 +119,7 @@ namespace Spectrum {
 		sf::Sprite oshadow;
 		oshadow.setTexture(oshadowT);
 
+		setSpriteset(false);
 		opponentSprite.setTexture(opponentSpriteset);
 		
 
@@ -147,6 +154,9 @@ namespace Spectrum {
 	void BattleScene::startOpponentSprite() {
 		//Draw opponent
 		int opponentId = bEngine.getOpponent().getSpecies();
+
+		ostate = "stand";
+
 		string ofilepath = "images/creatures/" + std::to_string(opponentId) + "_stand.png";
 
 		if (!opponentSpriteset.loadFromFile(ofilepath)) {
@@ -220,5 +230,71 @@ namespace Spectrum {
 		gameEngine->gameWindow.draw(hpGauge);
 		gameEngine->gameWindow.draw(hpBar);
 	}
+
+	void BattleScene::setSpriteset(bool isPlayer) {
+		if (isPlayer) {
+			string pstateOld = pstate;
+			double speed = 0.5;
+			bool repeat = true;
+			int playerId = bEngine.getPlayer().getSpecies();
+
+			if (bEngine.getPlayer().isStunned) {
+				pstate = "stun";
+				speed = 0.2;
+			}
+			else if (bEngine.getPlayer().isFainted) {
+				pstate = "faint";
+			}
+			else if (bEngine.getPlayer().isAttacking) {
+				pstate = "attack";
+				//speed = 1;
+				speed = 0.5;
+				repeat = false;
+			}
+			else {
+				pstate = "stand";
+			}
+
+			if (pstate.compare(pstateOld) != 0) {
+				string pfilepath = "images/creatures/" + std::to_string(playerId) + "_" + pstate + ".png";
+				if (!playerSpriteset.loadFromFile(pfilepath)) {
+					//return EXIT_FAILURE;
+				}
+				playerSprite.setTexture(playerSpriteset);
+				playerAnimation.reset(speed,repeat);
+			}
+		}
+		else{
+			string ostateOld = ostate;
+			double speed = 0.5;
+			int opponentId = bEngine.getOpponent().getSpecies();
+
+			if (bEngine.getOpponent().isStunned) {
+				ostate = "stun";
+				speed = 0.2;
+			}
+			else if (bEngine.getOpponent().isFainted) {
+				ostate = "faint";
+			}
+			else {
+				ostate = "stand";
+			}
+
+			if (ostate.compare(ostateOld) != 0) {
+				string ofilepath = "images/creatures/" + std::to_string(opponentId) + "_" + ostate + ".png";
+				if (!opponentSpriteset.loadFromFile(ofilepath)) {
+					//return EXIT_FAILURE;
+				}
+				opponentSprite.setTexture(opponentSpriteset);
+				opponentAnimation.reset(speed);
+			}
+		}
+
+	}
+
+	void BattleScene::drawAttacks() {
+		bEngine.drawAttacks();
+	}
+
 }
 

@@ -6,6 +6,7 @@
 #include "BattleAI.h"
 #include "AttackMove.h"
 #include "Attack.h"
+#include "GameEngine.h"
 
 
 using namespace std;
@@ -21,26 +22,7 @@ namespace Spectrum {
 	public:
 		Creature();
 		~Creature();
-		enum FieldPosition {
-			TopLeft = 0,
-			TopCenter,
-			TopRight,
-			MiddleLeft,
-			MiddleCenter,
-			MiddleRight,
-			BottomLeft,
-			BottomCenter,
-			BottomRight,
-			oTopLeft,
-			oTopCenter,
-			oTopRight,
-			oMiddleLeft,
-			oMiddleCenter,
-			oMiddleRight,
-			oBottomLeft,
-			oBottomCenter,
-			oBottomRight
-		};
+		GameEngine* engine;
 
 		enum Movement {
 			Up = 0,
@@ -49,7 +31,7 @@ namespace Spectrum {
 			Down,
 		};
 
-		void init(int newId, int species, bool player, std::array<std::array<FieldTile, 3>, 6>* fieldArr);
+		void init(int newId, int species, bool player, std::array<std::array<FieldTile, 3>, 6>* fieldArr, GameEngine* enginePointer);
 
 		void setId(int, bool);
 		int getId();
@@ -61,6 +43,9 @@ namespace Spectrum {
 		void moveDown();
 		//void setPosition(FieldPosition);
 		bool isMoving;
+		bool isAttacking;
+		bool isStunned;
+		bool isFainted;
 		sf::Vector2f getScreenPosition();
 		sf::Vector2f tilePositions(sf::Vector2i);
 		void updatePosition();
@@ -69,8 +54,10 @@ namespace Spectrum {
 
 		float getHPPercentage();
 		void reduceHP(int val);
+		void damageCreature(int damageVal, int delayVal);
 		void updateAttacks();
 		void update();
+		void drawAttacks();
 
 		int id;
 		int species;
@@ -88,6 +75,8 @@ namespace Spectrum {
 		sf::Vector2f finalCoord;
 		sf::Vector2f curCoord;
 		int moveTimer;
+		int attackDelayTimer;
+		int stunTimer;
 
 		bool isPlayer;
 		BattleAI AI;

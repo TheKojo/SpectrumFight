@@ -12,6 +12,8 @@ namespace Spectrum {
 		void start();
 		sf::RenderWindow gameWindow;
 		GameEngine* gEngine;
+
+		sf::RenderWindow* getWindow();
 	};
 }
 

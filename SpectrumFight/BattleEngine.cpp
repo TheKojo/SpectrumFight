@@ -13,7 +13,9 @@ namespace Spectrum {
 	{
 	}
 
-	void BattleEngine::startBattle(int playerSpecies, int opponentSpecies) {
+	void BattleEngine::startBattle(int playerSpecies, int opponentSpecies, GameEngine* enginePointer) {
+
+		engine = enginePointer;
 
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -22,8 +24,8 @@ namespace Spectrum {
 			}
 		}
 
-		player.init(1, playerSpecies, true, &field);
-		opponent.init(2, opponentSpecies, false, &field);
+		player.init(1, playerSpecies, true, &field, enginePointer);
+		opponent.init(2, opponentSpecies, false, &field, enginePointer);
 	}
 
 	void BattleEngine::move(sf::Keyboard::Key key) {
@@ -74,6 +76,11 @@ namespace Spectrum {
 				field[i][j].update();
 			}
 		}
+	}
+
+	void BattleEngine::drawAttacks() {
+		player.drawAttacks();
+		opponent.drawAttacks();
 	}
 }
 

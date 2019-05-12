@@ -20,6 +20,9 @@ namespace Spectrum {
 		void startOpponentSprite();
 		void drawPlayerHP();
 		void drawOpponentHP();
+		void setSpriteset(bool);
+
+		void drawAttacks();
 
 		GameEngine* gameEngine;
 		BattleEngine bEngine;
@@ -28,11 +31,19 @@ namespace Spectrum {
 		sf::Sprite playerSprite;
 		sf::Texture playerSpriteset;
 		Animation playerAnimation;
+		string pstate;
 
 		sf::Sprite opponentSprite;
 		sf::Texture opponentSpriteset;
 		Animation opponentAnimation;
+		string ostate;
 
+
+		sf::Sprite attackSprite;
+		sf::Texture attackTexture;
+		Animation attackAnim;
+
+		bool drawAtk;
 	};
 }
 

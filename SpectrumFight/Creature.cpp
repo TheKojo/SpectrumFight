@@ -14,7 +14,8 @@ namespace Spectrum{
 	{
 	}
 
-	void Creature::init(int newId, int speciesVal, bool player, std::array<std::array<FieldTile, 3>, 6>* fieldArr) {
+	void Creature::init(int newId, int speciesVal, bool player, std::array<std::array<FieldTile, 3>, 6>* fieldArr, GameEngine* enginePointer) {
+		engine = enginePointer;
 		id = newId;
 		species = speciesVal;
 		isPlayer = player;
@@ -23,6 +24,10 @@ namespace Spectrum{
 		curHP = totalHP;
 		speed = 100;
 		moveTimer = 0;
+		isMoving = false;
+		isAttacking = false;
+		isStunned = false;
+		isFainted = false;
 		//physAttack.init(10,100,100,id,true);
 
 		if (isPlayer) {
@@ -57,7 +62,7 @@ namespace Spectrum{
 	}
 
 	void Creature::move(Movement dir) {
-		if (isMoving == true) {
+		if (isMoving || isAttacking || isStunned || isFainted) {
 			return;
 		}
 		oldPosition = position;
@@ -110,11 +115,6 @@ namespace Spectrum{
 		}
 	}
 
-
-	/*void Creature::setPosition(FieldPosition newPosition) {
-		position = newPosition;
-		curCoord = tilePositions(position);
-	}*/
 
 	sf::Vector2f Creature::getScreenPosition() {
 		return curCoord;
@@ -201,25 +201,60 @@ namespace Spectrum{
 		}
 	}
 
+	void Creature::damageCreature(int damageVal, int stunVal) {
+		reduceHP(damageVal);
+		isStunned = true;
+		stunTimer = stunVal;
+	}
+
 	void Creature::physicalAttack() {
-		AttackMove atk;
-		atk.init(this, field);
-		activeAttacks.push_back(atk);
-
-		//put attack on field
-
-
+		if (!isMoving && !isAttacking && !isStunned) {
+			AttackMove atk;
+			atk.init(this, field, engine);
+			activeAttacks.push_back(atk);
+			isAttacking = true;
+			attackDelayTimer = atk.attackerDelay;
+		}
 	}
 
 	void Creature::updateAttacks() {
+
+		if (isAttacking) {
+			attackDelayTimer -= 1;
+			if (attackDelayTimer <= 0) {
+				attackDelayTimer = 0;
+				isAttacking = false;
+			}
+		}
+
+		if (isStunned) {
+			stunTimer -= 1;
+			if (stunTimer <= 0) {
+				stunTimer = 0;
+				isStunned = false;
+				if (curHP == 0) {
+					isFainted = true;
+				}
+			}
+		}
+
 		for (int i = 0; i < activeAttacks.size(); i++) {
 			activeAttacks[i].update();
+			if (activeAttacks[i].isDone()) {
+				activeAttacks.erase(activeAttacks.begin()+i);
+			}
 		}
 	}
 
 	void Creature::update() {
 		updatePosition();
 		updateAttacks();
+	}
+
+	void Creature::drawAttacks() {
+		for (int i = 0; i < activeAttacks.size(); i++) {
+			activeAttacks[i].drawMove();
+		}
 	}
 
 }

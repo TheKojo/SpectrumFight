@@ -21,5 +21,9 @@ namespace Spectrum {
 		sscene.main();
 
 	}
+
+	sf::RenderWindow* GameEngine::getWindow() {
+		return &gameWindow;
+	}
 }
 

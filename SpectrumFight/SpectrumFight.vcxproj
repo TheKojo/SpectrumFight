@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Attack.cpp" />
+    <ClCompile Include="AttackDrawer.cpp" />
     <ClCompile Include="AttackMove.cpp" />
     <ClCompile Include="BattleAI.cpp" />
     <ClCompile Include="BattleEngine.cpp" />
@@ -150,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Attack.h" />
+    <ClInclude Include="AttackDrawer.h" />
     <ClInclude Include="AttackMove.h" />
     <ClInclude Include="BattleAI.h" />
     <ClInclude Include="BattleEngine.h" />
