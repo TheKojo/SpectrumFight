@@ -46,12 +46,15 @@ namespace Spectrum {
 		for (int i = 0; i < activePositions.size(); i++) {
 			int x = activePositions[i].x;
 			int y = activePositions[i].y;
-			if ((*field)[x][y].hasCreature() && !done) {
+			if ((*field)[x][y].hasCreature() && !dealtDamage) {
 				if ((*field)[x][y].currCreature->getId() != attacker->getId()) {
 					//deal damage
 					(*field)[x][y].currCreature->damageCreature(damage, stunDelay);
 					dealtDamage = true;
-					done = true;
+					if (attackAnim.done) {
+						done = true;
+					}
+					
 				}
 			}
 		}
@@ -59,6 +62,12 @@ namespace Spectrum {
 		//tick down delay on attacker
 		//check if delay on attacker is finished, if so turn off
 
+
+		//tick down duration
+		duration -= 1;
+		if (duration <= 0 && attackAnim.done) {
+			done = true;
+		}
 	}
 
 	void AttackMove::setDone() {
@@ -70,11 +79,8 @@ namespace Spectrum {
 	}
 
 	void AttackMove::drawMove() {
-
 		attackSprite.setTexture(attackTexture);
-
 		attackAnim.update(&attackSprite);
-
 		engine->gameWindow.draw(attackSprite);
 	}
 

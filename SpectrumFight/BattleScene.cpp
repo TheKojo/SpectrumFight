@@ -21,7 +21,14 @@ namespace Spectrum {
 	}
 
 	void BattleScene::main() {
-		//Load start menu graphics
+		sf::Clock updateClock;
+		sf::Clock frameClock;
+		int maxUpdates = 5;
+		float updateRate = 1.0f / 20;
+
+		updateClock.restart();
+
+		//Load bg
 		sf::Texture texture;
 		if (!texture.loadFromFile("images/battlebg.png")) {
 			//return EXIT_FAILURE;
@@ -32,9 +39,12 @@ namespace Spectrum {
 		bEngine.startBattle(1, 2, gameEngine);
 		startPlayerSprite();
 		startOpponentSprite();
-		//startAttack();
 
 		while (gameEngine->gameWindow.isOpen()) {
+
+			sf::Int32 updateNext = updateClock.getElapsedTime().asMilliseconds();
+			int updates = 0;
+
 			sf::Event event;
 			while (gameEngine->gameWindow.pollEvent(event))
 			{
@@ -66,9 +76,15 @@ namespace Spectrum {
 					bEngine.physicalAttack();	
 				}
 			}
+			
+			sf::Int32 updateTime = updateClock.getElapsedTime().asMilliseconds();
 
-			bEngine.update();
+			//while ((updateTime - updateNext) >= updateRate && updates++ < maxUpdates) {
+				bEngine.update();
+				//updateNext += updateRate;
+			//}
 
+		
 			gameEngine->gameWindow.clear();
 			drawField();
 			

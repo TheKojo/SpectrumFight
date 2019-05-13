@@ -44,7 +44,7 @@ namespace Spectrum{
 		id = newId;
 		totalHP = 50;
 		curHP = totalHP;
-		speed = 100;
+		speed = 50;
 		moveTimer = 0;
 		isPlayer = player;
 		if (!isPlayer) {
@@ -122,8 +122,8 @@ namespace Spectrum{
 
 	void Creature::updatePosition() {
 		if (isMoving == true) {
-			curCoord.x += (finalCoord.x - oldCoord.x) / speed;
-			curCoord.y += (finalCoord.y - oldCoord.y) / speed;
+			curCoord.x += (finalCoord.x - oldCoord.x)/ speed;
+			curCoord.y += (finalCoord.y - oldCoord.y)/ speed;
 			moveTimer += 1;
 			if (moveTimer >= speed) {
 				isMoving = false;

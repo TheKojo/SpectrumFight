@@ -33,7 +33,7 @@ namespace Spectrum {
 
 	void Animation::update() {
 		target->setTextureRect(frames[curFrame].rect);
-		frameTimeCounter += 0.005;
+		frameTimeCounter += 0.01;//0.005;
 
 
 

@@ -1,16 +1,2 @@
 ﻿  AttackMove.cpp
-  BattleScene.cpp
-c:\users\asant\source\repos\spectrumfight\spectrumfight\battlescene.cpp(197): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-c:\users\asant\source\repos\spectrumfight\spectrumfight\battlescene.cpp(227): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-  Creature.cpp
-  StartScene.cpp
-  Generating Code...
   SpectrumFight.vcxproj -> C:\Users\asant\source\repos\SpectrumFight\x64\Debug\SpectrumFight.exe
