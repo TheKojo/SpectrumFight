@@ -1,2 +1,27 @@
-﻿  AttackMove.cpp
+﻿  Animation.cpp
+c:\users\asant\source\repos\spectrumfight\spectrumfight\animation.cpp(21): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+c:\users\asant\source\repos\spectrumfight\spectrumfight\animation.cpp(22): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+  AttackMove.cpp
+  BattleScene.cpp
+c:\users\asant\source\repos\spectrumfight\spectrumfight\battlescene.cpp(213): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+c:\users\asant\source\repos\spectrumfight\spectrumfight\battlescene.cpp(243): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+  Creature.cpp
+  GameEngine.cpp
+  Generating Code...
   SpectrumFight.vcxproj -> C:\Users\asant\source\repos\SpectrumFight\x64\Debug\SpectrumFight.exe
